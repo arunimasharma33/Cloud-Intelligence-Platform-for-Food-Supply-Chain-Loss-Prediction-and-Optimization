@@ -31,24 +31,24 @@ Existing research relies heavily on static, synthetic, or self-reported survey d
 1. **Predictive Analytics:** Develop machine learning models to forecast food loss percentage, quality degradation, and supply chain bottlenecks across various commodities and supply chain stages.
 2. **Real-time IoT & Data Ingestion:** Establish continuous, real-time sensing for environmental parameters (temperature, humidity, transit duration, pest presence) during storage and transportation.
 3. **Automated Decision Support:** Provide actionable recommendations such as dynamic inventory redistribution, route optimization, and storage condition adjustments to minimize spoilage.
-4. **Cloud-Native Architecture:** Build a scalable, event-driven, serverless cloud platform (AWS / Azure) for low-latency ingestion, automated model inference, and real-time visualization.
+4. **Cloud-Native Architecture:** Build a scalable, event-driven, serverless cloud platform on Microsoft Azure for low-latency ingestion, automated model inference, and real-time visualization.
 
 ---
 
 ## Proposed Architecture & Framework
 
-The platform follows a multi-tier cloud architecture:
+The platform follows a multi-tier Azure cloud architecture:
 
 1. **IoT Sensing & Ingestion Layer:**
    - Real-time environmental and logistics telemetry captured by IoT edge devices.
-   - Ingested via **AWS IoT Core / Azure IoT Hub** with MQTT/HTTPS protocols.
+   - Ingested via **Azure IoT Hub** with MQTT/HTTPS protocols.
 2. **Data Storage & Data Lake Layer:**
-   - Raw and historical data stored in **AWS S3 / Azure Blob Storage**.
-   - Structured analytical data stored in **AWS Redshift / Azure SQL Database**.
+   - Raw and historical data stored in **Azure Blob Storage**.
+   - Structured analytical data stored in **Azure SQL Database**.
 3. **Event-Driven Processing Layer:**
-   - **AWS Lambda / Azure Functions** handle event triggers, data transformations, and payload validation.
+   - **Azure Functions** handle event triggers, data transformations, and payload validation.
 4. **Machine Learning Pipeline:**
-   - **AWS SageMaker / Azure Machine Learning** trains and deploys predictive regression/classification models.
+   - **Azure Machine Learning Studio** trains and deploys predictive regression/classification models.
    - Continuous inference computes real-time risk scores and estimated loss percentages.
 5. **Analytics & Dashboard Layer:**
    - Interactive web interface displaying live metrics, supply chain heatmaps, predictive alerts, and mitigation recommendations.
@@ -59,10 +59,10 @@ The platform follows a multi-tier cloud architecture:
 
 ## Technology Stack
 
-- **Cloud Infrastructure:** AWS (S3, Lambda, IoT Core, SageMaker, Redshift) / Microsoft Azure (Azure IoT Hub, Blob Storage, Azure Functions, Azure ML, Azure SQL)
+- **Cloud Infrastructure:** Microsoft Azure (Azure IoT Hub, Azure Blob Storage, Azure Functions, Azure Machine Learning, Azure SQL Database)
 - **Machine Learning & Analytics:** Python, Scikit-learn, Pandas, NumPy
 - **IoT & Hardware Simulation:** Telemetry sensors (Temperature, Humidity, Rodents/Pest tracking, GPS)
-- **Database Systems:** Relational & Data Warehouse (Azure SQL / PostgreSQL / AWS Redshift)
+- **Database Systems:** Relational & Data Warehouse (Azure SQL Database / PostgreSQL)
 - **Frontend / Visualization:** Interactive Web Dashboard (Streamlit / React / HTML5)
 - **Version Control:** Git & GitHub
 
