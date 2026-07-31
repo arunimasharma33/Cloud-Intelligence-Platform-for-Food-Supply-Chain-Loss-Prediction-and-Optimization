@@ -1,0 +1,15 @@
+New-Item -ItemType File -Path "Presentation\.gitkeep"
+New-Item -ItemType File -Path "References\.gitkeep"
+New-Item -ItemType File -Path "Results\.gitkeep"
+New-Item -ItemType File -Path "src\.gitkeep"
+
+
+
+
+
+
+
+
+
+
+
