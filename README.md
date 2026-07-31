@@ -136,6 +136,13 @@ The repository includes real-world historical food loss datasets located under t
 
 ---
 
+## Contributors
+
+- [@JacobJM04](https://github.com/JacobJM04)
+- [@arunimasharma33](https://github.com/arunimasharma33)
+
+---
+
 ## Contributing
 
 Contributions are welcome! Please follow these steps to contribute:
