@@ -1,5 +1,8 @@
 # Cloud Intelligence Platform for Food Supply Chain Loss Prediction and Optimization
 
+![Microsoft Azure](https://img.shields.io/badge/Cloud-Microsoft%20Azure-0089D6?style=flat-square&logo=microsoftazure)
+![Python](https://img.shields.io/badge/Language-Python%203.9+-3776AB?style=flat-square&logo=python)
+
 **Course:** BITE412L - Cloud Computing  
 
 ---
@@ -103,3 +106,45 @@ The repository includes real-world historical food loss datasets located under t
 ├── presentation/
 └── references/
 ```
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Python 3.9+
+- Git
+- Microsoft Azure Account (for IoT Hub & Azure ML resources)
+
+### Local Setup
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/arunimasharma33/Cloud-Intelligence-Platform-for-Food-Supply-Chain-Loss-Prediction-and-Optimization.git
+   cd Cloud-Intelligence-Platform-for-Food-Supply-Chain-Loss-Prediction-and-Optimization
+   ```
+
+2. Set up a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please follow these steps to contribute:
+
+1. Fork or clone the repository and create a feature branch:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+2. Commit your changes with clear, descriptive commit messages.
+3. Push to your branch and open a Pull Request against `main`.
+4. Ensure all code and documentation standards are met before requesting review.
+
