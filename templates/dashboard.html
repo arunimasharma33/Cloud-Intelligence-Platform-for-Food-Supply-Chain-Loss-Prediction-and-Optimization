@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Supply Chain Risk Platform</title>
+  <meta name="description" content="Cold-chain IoT telematics, spoilage regression, and risk classification for food supply chain operations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       MONOCHROME DESIGN SYSTEM
+    ═══════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-base:        #000000;
+      --bg-sidebar:     #09090b;
+      --bg-card:        #0f0f12;
+      --bg-card-hover:  #141418;
+      --bg-input:       #0a0a0c;
+      --bg-subtle:      #18181b;
+
+      --border:         #242429;
+      --border-light:   #34343b;
+      --border-strong:  #52525b;
+
+      --text-primary:   #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-muted:     #71717a;
+
+      --radius-sm:      6px;
+      --radius-md:      10px;
+      --radius-lg:      14px;
+
+      --font-mono:      'JetBrains Mono', monospace;
+      --transition:     all 0.18s ease-in-out;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Clean background grid */
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.04;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       LAYOUT SHELL
+    ═══════════════════════════════════════════════════════════ */
+    .shell { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+    /* ─── Sidebar ─────────────────────────────────────────────── */
+    .sidebar {
+      width: 250px; flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+      padding: 24px 16px;
+    }
+
+    .logo-area {
+      display: flex; align-items: center; gap: 12px;
+      padding: 0 4px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .logo-icon-wrap {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      background: #ffffff; color: #000000;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-icon-wrap svg { width: 18px; height: 18px; }
+    .logo-text { font-size: 13.5px; font-weight: 700; color: #ffffff; letter-spacing: -0.2px; line-height: 1.25; }
+    .logo-sub  { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+
+    .nav-section-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--text-muted);
+      padding: 0 8px; margin-bottom: 8px;
+    }
+
+    .nav-btn {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 10px 12px; border-radius: var(--radius-sm);
+      border: 1px solid transparent; background: transparent; cursor: pointer;
+      color: var(--text-secondary); font-size: 13px; font-weight: 500;
+      text-align: left; transition: var(--transition); margin-bottom: 4px;
+    }
+    .nav-btn svg { width: 15px; height: 15px; flex-shrink: 0; stroke: currentColor; }
+    .nav-btn:hover { background: var(--bg-subtle); color: #ffffff; border-color: var(--border); }
+    .nav-btn.active {
+      background: #ffffff; color: #000000;
+      border-color: #ffffff; font-weight: 600;
+    }
+    .nav-btn.active svg { stroke: #000000; }
+
+    .sidebar-stats {
+      margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);
+    }
+    .stat-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 8px; font-size: 11.5px;
+    }
+    .stat-row .label { color: var(--text-muted); }
+    .stat-row .value { color: #ffffff; font-family: var(--font-mono); font-size: 11px; }
+
+    .status-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: var(--radius-sm);
+      background: var(--bg-card); border: 1px solid var(--border);
+      font-size: 11px; color: #ffffff; font-weight: 500;
+      margin-top: 16px;
+    }
+    .status-pill .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #ffffff;
+    }
+
+    /* ─── Main Content ────────────────────────────────────────── */
+    .main { flex: 1; min-width: 0; padding: 32px 40px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       PAGE HEADER
+    ═══════════════════════════════════════════════════════════ */
+    .page-header {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+    }
+    .page-header-tag {
+      display: inline-flex; align-items: center;
+      font-size: 10.5px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--text-muted); border: 1px solid var(--border); border-radius: 4px;
+      padding: 2px 8px; margin-bottom: 10px; font-family: var(--font-mono);
+    }
+    .page-header h1 { font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 6px; letter-spacing: -0.3px; }
+    .page-header p  { font-size: 13.5px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ═══════════════════════════════════════════════════════════
+       VIEWS
+    ═══════════════════════════════════════════════════════════ */
+    .view { display: none; }
+    .view.active { display: block; animation: fadeIn 0.2s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CARDS & GRIDS
+    ═══════════════════════════════════════════════════════════ */
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 22px;
+      transition: var(--transition);
+    }
+    .card:hover { border-color: var(--border-light); }
+
+    .card-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 18px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-header svg { width: 16px; height: 16px; stroke: var(--text-secondary); flex-shrink: 0; }
+    .card-header h3 { font-size: 13px; font-weight: 600; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       FORM ELEMENTS
+    ═══════════════════════════════════════════════════════════ */
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-label {
+      display: block; font-size: 11px; font-weight: 600;
+      color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.6px; margin-bottom: 8px;
+    }
+    .form-control {
+      width: 100%; background: var(--bg-input);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 9px 12px; color: #ffffff; font-size: 13px;
+      font-family: inherit; outline: none; transition: var(--transition);
+      appearance: none; -webkit-appearance: none;
+    }
+    .form-control:focus { border-color: var(--border-strong); }
+    .form-control option { background: var(--bg-card); color: #ffffff; }
+
+    .range-wrap { display: flex; align-items: center; gap: 12px; }
+    .range-val {
+      font-family: var(--font-mono); font-size: 12.5px; font-weight: 600;
+      color: #ffffff; min-width: 54px; text-align: right; white-space: nowrap;
+    }
+    input[type=range] {
+      flex: 1; appearance: none; -webkit-appearance: none;
+      height: 4px; border-radius: 2px; outline: none; cursor: pointer;
+      background: #242429;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+      background: #ffffff; border: 2px solid #000000;
+      cursor: pointer; transition: var(--transition);
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+    /* ═══════════════════════════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px;
+      font-weight: 600; font-family: inherit; cursor: pointer;
+      outline: none; transition: var(--transition); text-decoration: none;
+    }
+    .btn-primary {
+      background: #ffffff; color: #000000; border: 1px solid #ffffff;
+    }
+    .btn-primary:hover { background: #e4e4e7; border-color: #e4e4e7; }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: var(--bg-card); color: #ffffff;
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--bg-subtle); border-color: var(--border-light); }
+
+    .btn-full { width: 100%; }
+
+    .spinner {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.2); border-top-color: #000000;
+      animation: spin 0.7s linear infinite; display: none;
+    }
+    .btn-ghost .spinner {
+      border-color: rgba(255,255,255,0.2); border-top-color: #ffffff;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ═══════════════════════════════════════════════════════════
+       METRIC / KPI CARDS
+    ═══════════════════════════════════════════════════════════ */
+    .kpi-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 18px;
+      position: relative; transition: var(--transition);
+    }
+    .kpi-card .kpi-label {
+      font-size: 10.5px; font-weight: 600; letter-spacing: 0.6px;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+    }
+    .kpi-card .kpi-value {
+      font-size: 26px; font-weight: 700; line-height: 1.1;
+      color: #ffffff; margin-bottom: 4px;
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-card .kpi-sub { font-size: 11.5px; color: var(--text-muted); }
+
+    /* ═══════════════════════════════════════════════════════════
+       URGENCY / STATUS BADGES (Monochrome)
+    ═══════════════════════════════════════════════════════════ */
+    .urgency-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 4px; font-size: 11.5px; font-weight: 600;
+      letter-spacing: 0.3px; border: 1px solid; white-space: nowrap;
+      font-family: var(--font-mono);
+    }
+    .urgency-badge.optimal  { background: #141416; color: #d4d4d8; border-color: #27272a; }
+    .urgency-badge.advisory { background: #18181b; color: #ffffff; border-color: #3f3f46; }
+    .urgency-badge.warning  { background: #27272a; color: #ffffff; border-color: #52525b; }
+    .urgency-badge.critical { background: #ffffff; color: #000000; border-color: #ffffff; }
+
+    /* ═══════════════════════════════════════════════════════════
+       RESULT PANEL
+    ═══════════════════════════════════════════════════════════ */
+    #result-panel {
+      margin-top: 24px; display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+    #result-panel.show { display: block; }
+
+    .result-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .result-header h3 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #ffffff; }
+
+    .action-box {
+      border-radius: var(--radius-sm); padding: 16px 18px;
+      font-size: 13px; line-height: 1.6; color: #ffffff;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid #ffffff;
+    }
+
+    .stress-list { list-style: none; }
+    .stress-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 9px 0; border-bottom: 1px solid var(--border);
+      font-size: 12.5px; color: var(--text-secondary); line-height: 1.5;
+    }
+    .stress-item:last-child { border-bottom: none; }
+    .stress-item .bullet {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #ffffff; margin-top: 6px; flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       PROGRESS / RISK GAUGE (Monochrome)
+    ═══════════════════════════════════════════════════════════ */
+    .risk-bar-wrap { margin: 16px 0; }
+    .risk-bar-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--text-muted); margin-bottom: 8px;
+      font-family: var(--font-mono);
+    }
+    .risk-bar-track {
+      height: 6px; border-radius: 3px; background: #1c1c20; overflow: hidden;
+    }
+    .risk-bar-fill {
+      height: 100%; border-radius: 3px; background: #ffffff;
+      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SCENARIO CARDS (Monochrome)
+    ═══════════════════════════════════════════════════════════ */
+    .scenario-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 20px;
+      transition: var(--transition);
+    }
+    .scenario-card:hover { border-color: var(--border-strong); }
+    .scenario-card .sc-badge {
+      display: inline-flex; align-items: center;
+      font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px;
+      padding: 3px 8px; border-radius: 4px; margin-bottom: 12px;
+      border: 1px solid var(--border);
+      color: #ffffff; background: var(--bg-subtle);
+      font-family: var(--font-mono);
+    }
+    .scenario-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #ffffff; }
+    .scenario-card p  { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 14px; }
+    .sc-params { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .sc-param {
+      font-size: 11px; font-family: var(--font-mono);
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2px 7px; color: var(--text-secondary);
+    }
+    .sc-result {
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+      display: none;
+    }
+    .sc-result.show { display: block; }
+
+    /* ═══════════════════════════════════════════════════════════
+       TOAST NOTIFICATIONS (Monochrome)
+    ═══════════════════════════════════════════════════════════ */
+    #toast-container {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 16px; border-radius: var(--radius-sm);
+      background: #18181b; border: 1px solid #3f3f46;
+      font-size: 12.5px; color: #ffffff; font-family: var(--font-mono);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+      animation: slideIn 0.25s ease, fadeOut 0.35s ease 2.6s forwards;
+      max-width: 320px;
+    }
+    @keyframes slideIn  { from { opacity:0; transform:translateX(16px); } to { opacity:1; transform:none; } }
+    @keyframes fadeOut  { to   { opacity:0; transform:translateX(16px); } }
+
+    /* ═══════════════════════════════════════════════════════════
+       SHAP EXPLANATION FACTORS
+    ═══════════════════════════════════════════════════════════ */
+    .factor-list { list-style: none; }
+    .factor-item { padding: 11px 0; border-bottom: 1px solid var(--border); }
+    .factor-item:last-child { border-bottom: none; }
+    .factor-item-top {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 6px; gap: 10px;
+    }
+    .factor-name { font-size: 12.5px; font-weight: 600; color: #ffffff; }
+    .factor-value { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); white-space: nowrap; }
+    .factor-bar-track {
+      position: relative; height: 6px; border-radius: 3px; background: #1c1c20;
+      overflow: hidden; display: flex;
+    }
+    .factor-bar-fill {
+      height: 100%; transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+    .factor-bar-fill.increases { background: #ffffff; }
+    .factor-bar-fill.decreases { background: #52525b; }
+    .factor-direction {
+      font-size: 10.5px; font-family: var(--font-mono); margin-top: 5px;
+      color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       BATCH UPLOAD & RESULTS TABLE
+    ═══════════════════════════════════════════════════════════ */
+    .upload-drop {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 100%; border: 1.5px dashed var(--border-light); border-radius: var(--radius-md);
+      padding: 36px 24px; text-align: center; cursor: pointer;
+      transition: var(--transition); background: var(--bg-input);
+    }
+    .upload-drop:hover, .upload-drop.dragover { border-color: var(--border-strong); background: var(--bg-subtle); }
+    .upload-drop svg {
+      width: 36px; height: 36px; stroke: var(--text-muted); margin-bottom: 12px;
+      transition: stroke 0.2s ease, transform 0.2s ease;
+    }
+    .upload-drop:hover svg, .upload-drop.dragover svg {
+      stroke: #ffffff; transform: translateY(-3px);
+    }
+    .upload-drop .u-title { font-size: 13.5px; font-weight: 600; color: #ffffff; margin-bottom: 4px; }
+    .upload-drop .u-sub { font-size: 11.5px; color: var(--text-muted); }
+    .upload-filename {
+      margin-top: 14px; font-size: 12px; font-family: var(--font-mono);
+      color: #ffffff; display: none;
+    }
+    .upload-filename.show { display: block; }
+
+    .batch-table-wrap { overflow-x: auto; }
+    table.batch-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    table.batch-table th {
+      text-align: left; padding: 9px 12px; font-size: 10.5px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);
+      border-bottom: 1px solid var(--border-light); white-space: nowrap;
+    }
+    table.batch-table td {
+      padding: 9px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text-secondary); white-space: nowrap;
+    }
+    table.batch-table tbody tr:hover { background: var(--bg-subtle); }
+    table.batch-table .cell-strong { color: #ffffff; font-weight: 600; font-family: var(--font-mono); }
+    .batch-note {
+      font-size: 11.5px; color: var(--text-muted); margin-top: 10px;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 1050px) {
+      .grid-3 { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: 1fr 1fr; }
+      .main { padding: 24px 20px; }
+    }
+    @media (max-width: 750px) {
+      .sidebar { display: none; }
+      .grid-2, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 24px 0; }
+    .mono { font-family: var(--font-mono); }
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div id="toast-container"></div>
+
+<div class="shell">
+
+  <!-- ─── SIDEBAR ─────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="logo-area">
+      <div class="logo-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">Supply Chain Platform</div>
+        <div class="logo-sub">Food Loss & Risk Engine</div>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Navigation</div>
+
+    <button class="nav-btn active" onclick="showView('predictor', this)" id="nav-predictor">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <circle cx="12" cy="12" r="6"></circle>
+        <circle cx="12" cy="12" r="2"></circle>
+      </svg>
+      Live Risk Predictor
+    </button>
+    <button class="nav-btn" onclick="showView('simulator', this)" id="nav-simulator">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="21" x2="4" y2="14"></line>
+        <line x1="4" y1="10" x2="4" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12" y2="3"></line>
+        <line x1="20" y1="21" x2="20" y2="16"></line>
+        <line x1="20" y1="12" x2="20" y2="3"></line>
+        <line x1="1" y1="14" x2="7" y2="14"></line>
+        <line x1="9" y1="8" x2="15" y2="8"></line>
+        <line x1="17" y1="16" x2="23" y2="16"></line>
+      </svg>
+      Scenario Simulator
+    </button>
+    <button class="nav-btn" onclick="showView('batch', this)" id="nav-batch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+      Batch Analysis
+    </button>
+
+    <div class="sidebar-stats">
+      <div class="nav-section-label" style="padding:0; margin-bottom:6px;">System State</div>
+      <div class="stat-row"><span class="label">Dataset</span><span class="value">30,000</span></div>
+      <div class="stat-row"><span class="label">Features</span><span class="value">22</span></div>
+      <div class="stat-row"><span class="label">Target Leakage</span><span class="value">0%</span></div>
+      <div class="stat-row"><span class="label">Regressor R²</span><span class="value">0.466</span></div>
+      <div class="stat-row"><span class="label">Classifier AUC</span><span class="value">0.862</span></div>
+      <div class="status-pill"><div class="dot"></div> ML Models Active</div>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN CONTENT ──────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- ══════════════════════════════════════════════════════
+         VIEW 1: LIVE RISK PREDICTOR
+    ══════════════════════════════════════════════════════ -->
+    <div id="view-predictor" class="view active">
+      <div class="page-header">
+        <div class="page-header-tag">Live Telemetry</div>
+        <h1>Live Shipment Risk Predictor</h1>
+        <p>Configure operational and environmental features to calculate food loss percentage and generate risk assessment recommendations.</p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Col 1: Cargo & Packaging -->
+        <div class="card">
+          <div class="card-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <h3>Cargo &amp; Packaging</h3>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Commodity</label>
+            <select id="f-commodity" class="form-control" onchange="autofillTemp()">
+              <option>Maize (corn)</option>
+              <option>Wheat</option>
+              <option>Rice</option>
+              <option>Milk (fresh whole dairy)</option>
+              <option>Hen eggs in shell, fresh</option>
+              <option>Meat of cattle with the bone, fresh or chilled</option>
+              <option>Meat of chickens, fresh or chilled</option>
+              <option>Tomatoes</option>
+              <option>Apricots</option>
+              <option>Apples</option>
+              <option>Bananas</option>
+              <option>Potatoes</option>
+              <option>Onions and shallots, green</option>
+              <option>Grapes</option>
+              <option>Strawberries</option>
+              <option>Sorghum</option>
+              <option>Millet</option>
+              <option>Blueberries</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Supply Chain Stage</label>
+            <select id="f-stage" class="form-control">
+              <option>Transport</option>
+              <option>Storage (post-harvest collection)</option>
+              <option>Processing</option>
+              <option>Retail</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Packaging Material</label>
+            <select id="f-packaging" class="form-control">
+              <option>cardboard</option>
+              <option>plastic</option>
+              <option>foil</option>
+              <option>paper</option>
+              <option>glass</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Inventory Payload</label>
+            <div class="range-wrap">
+              <input type="range" id="f-inventory" min="50" max="500" value="320" step="10" oninput="syncRange(this,'f-inventory-val')" />
+              <span class="range-val" id="f-inventory-val">320 kg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 2: Thermal & Environmental -->
+        <div class="card">
+          <div class="card-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path>
+            </svg>
+            <h3>Thermal &amp; Environmental</h3>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Cargo Temperature (°C)</label>
+            <div id="temp-class-hint" style="margin-bottom:8px;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);"></div>
+            <div class="range-wrap">
+              <input type="range" id="f-temperature" min="-25" max="45" value="18" step="0.5" oninput="syncRange(this,'f-temperature-val')" />
+              <span class="range-val" id="f-temperature-val">18.0 °C</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Relative Humidity (%)</label>
+            <div class="range-wrap">
+              <input type="range" id="f-humidity" min="10" max="95" value="55" step="1" oninput="syncRange(this,'f-humidity-val')" />
+              <span class="range-val" id="f-humidity-val">55 %</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Days to Product Expiry</label>
+            <div class="range-wrap">
+              <input type="range" id="f-expiry" min="1" max="30" value="20" step="1" oninput="syncRange(this,'f-expiry-val')" />
+              <span class="range-val" id="f-expiry-val">20 days</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 3: Logistics -->
+        <div class="card">
+          <div class="card-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"></rect>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+            <h3>Logistics &amp; Operations</h3>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Shipment Status</label>
+            <select id="f-status" class="form-control">
+              <option>In Transit</option>
+              <option>Delayed</option>
+              <option>Delivered</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Traffic Status</label>
+            <select id="f-traffic" class="form-control">
+              <option>Clear</option>
+              <option>Heavy</option>
+              <option>Detour</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Disruption Root Cause</label>
+            <select id="f-delay-reason" class="form-control">
+              <option>Unknown</option>
+              <option>Traffic</option>
+              <option>Weather</option>
+              <option>Mechanical Failure</option>
+              <option>Detour</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Queue / Waiting Time (min)</label>
+            <div class="range-wrap">
+              <input type="range" id="f-waiting" min="0" max="90" value="15" step="2" oninput="syncRange(this,'f-waiting-val')" />
+              <span class="range-val" id="f-waiting-val">15 min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="margin-top:20px; display:flex; gap:12px; align-items:center;">
+        <button class="btn btn-primary" id="analyze-btn" onclick="runPrediction()">
+          <div class="spinner" id="analyze-spinner"></div>
+          <span id="analyze-label">Analyze Shipment &amp; Predict Risk</span>
+        </button>
+        <button class="btn btn-ghost" onclick="resetForm()">Reset Parameters</button>
+      </div>
+
+      <!-- Result Panel -->
+      <div id="result-panel">
+        <div class="divider"></div>
+        <div class="result-header">
+          <h3>Inference &amp; Risk Assessment Output</h3>
+          <span id="result-timestamp" class="mono" style="font-size:11.5px;color:var(--text-muted);"></span>
+        </div>
+
+        <!-- 4 KPI Cards -->
+        <div class="grid-4" style="margin-bottom:20px;">
+          <div class="kpi-card">
+            <div class="kpi-label">Predicted Loss %</div>
+            <div class="kpi-value" id="kpi-loss">—</div>
+            <div class="kpi-sub">Continuous regression estimate</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Risk Classification</div>
+            <div class="kpi-value" id="kpi-risk-flag">—</div>
+            <div class="kpi-sub">Binary risk determination</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Risk Probability</div>
+            <div class="kpi-value" id="kpi-risk-prob">—</div>
+            <div class="kpi-sub">Calibrated confidence score</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Operational Urgency</div>
+            <div id="kpi-urgency" style="margin-top:6px;"></div>
+            <div class="kpi-sub" style="margin-top:6px;">Protocol classification</div>
+          </div>
+        </div>
+
+        <!-- Risk Bar -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="risk-bar-wrap">
+            <div class="risk-bar-label">
+              <span>Risk Probability Index</span>
+              <span id="risk-bar-pct">0%</span>
+            </div>
+            <div class="risk-bar-track">
+              <div class="risk-bar-fill" id="risk-bar-fill" style="width:0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Stress Factors -->
+          <div class="card">
+            <div class="card-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <h3>Detected Physical Stress Factors</h3>
+            </div>
+            <ul class="stress-list" id="stress-list"></ul>
+          </div>
+
+          <!-- Action Recommendation -->
+          <div class="card">
+            <div class="card-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              <h3>Recommended Logistics Action</h3>
+              <span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);" id="action-code-badge">—</span>
+            </div>
+            <div id="action-box" class="action-box">
+              <p id="action-text">—</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- SHAP Model Explanation -->
+        <div class="grid-2" id="explanation-section" style="display:none;">
+          <div class="card">
+            <div class="card-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3v18h18"></path>
+                <path d="M18.7 8a10 10 0 1 1-9.5-5.5"></path>
+                <path d="M12 12l7-7"></path>
+              </svg>
+              <h3>Top Drivers &middot; Predicted Loss %</h3>
+            </div>
+            <ul class="factor-list" id="loss-factor-list"></ul>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3v18h18"></path>
+                <path d="M18.7 8a10 10 0 1 1-9.5-5.5"></path>
+                <path d="M12 12l7-7"></path>
+              </svg>
+              <h3>Top Drivers &middot; Risk Classification</h3>
+            </div>
+            <ul class="factor-list" id="risk-factor-list"></ul>
+          </div>
+        </div>
+      </div>
+    </div><!-- /view-predictor -->
+
+
+    <!-- ══════════════════════════════════════════════════════
+         VIEW 2: SCENARIO SIMULATOR
+    ══════════════════════════════════════════════════════ -->
+    <div id="view-simulator" class="view">
+      <div class="page-header">
+        <div class="page-header-tag">Operational Presets</div>
+        <h1>Scenario Simulator</h1>
+        <p>Evaluate platform decision behavior against predefined operational scenarios.</p>
+      </div>
+
+      <div class="grid-3">
+        <!-- Scenario 1: Safe -->
+        <div class="scenario-card">
+          <div class="sc-badge">Safe Baseline</div>
+          <h4>Optimal Ambient Cereal Transport</h4>
+          <p>Standard ambient transport of hard cereals (Maize) with optimal temperature and nominal waiting times.</p>
+          <div class="sc-params">
+            <span class="sc-param">Maize (corn)</span>
+            <span class="sc-param">18.5 °C</span>
+            <span class="sc-param">54% RH</span>
+            <span class="sc-param">28 days shelf</span>
+            <span class="sc-param">12 min wait</span>
+          </div>
+          <button class="btn btn-ghost btn-full" onclick="runScenario('SCENARIO_01_OPTIMAL_AMBIENT', this, 1)">
+            <div class="spinner"></div><span>Run Scenario 1</span>
+          </button>
+          <div class="sc-result" id="sc-result-1"></div>
+        </div>
+
+        <!-- Scenario 2: Critical -->
+        <div class="scenario-card">
+          <div class="sc-badge">Critical Excursion</div>
+          <h4>Cold-Chain Compressor Failure</h4>
+          <p>Severe compressor failure during fresh dairy transit (17.2 °C vs safe 0–8 °C limit) with mechanical delay.</p>
+          <div class="sc-params">
+            <span class="sc-param">Fresh Dairy</span>
+            <span class="sc-param">17.2 °C</span>
+            <span class="sc-param">78.5% RH</span>
+            <span class="sc-param">6 days shelf</span>
+            <span class="sc-param">58 min wait</span>
+          </div>
+          <button class="btn btn-ghost btn-full" onclick="runScenario('SCENARIO_02_COLD_CHAIN_BREACH', this, 2)">
+            <div class="spinner"></div><span>Run Scenario 2</span>
+          </button>
+          <div class="sc-result" id="sc-result-2"></div>
+        </div>
+
+        <!-- Scenario 3: Warning -->
+        <div class="scenario-card">
+          <div class="sc-badge">Perishable Expiry</div>
+          <h4>Perishable Produce Near Expiration</h4>
+          <p>High-vulnerability stone-fruit produce near expiration date (2 days left) with urban traffic delay.</p>
+          <div class="sc-params">
+            <span class="sc-param">Apricots</span>
+            <span class="sc-param">26.5 °C</span>
+            <span class="sc-param">68% RH</span>
+            <span class="sc-param">2 days shelf</span>
+            <span class="sc-param">42 min wait</span>
+          </div>
+          <button class="btn btn-ghost btn-full" onclick="runScenario('SCENARIO_03_PERISHABLE_PRODUCE_EXPIRY', this, 3)">
+            <div class="spinner"></div><span>Run Scenario 3</span>
+          </button>
+          <div class="sc-result" id="sc-result-3"></div>
+        </div>
+      </div>
+    </div><!-- /view-simulator -->
+
+
+    <!-- ══════════════════════════════════════════════════════
+         VIEW 3: BATCH ANALYSIS
+    ══════════════════════════════════════════════════════ -->
+    <div id="view-batch" class="view">
+      <div class="page-header">
+        <div class="page-header-tag">Bulk Inference</div>
+        <h1>Batch Shipment Analysis</h1>
+        <p>Upload a CSV of shipments to run loss and risk predictions across an entire manifest at once. At minimum each row needs a <span class="mono">commodity</span> column — any other missing fields fall back to sensible operational defaults.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <h3>Upload Shipment Manifest (.csv)</h3>
+        </div>
+
+        <label class="upload-drop" id="upload-drop" for="batch-file-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <div class="u-title">Click to choose a CSV, or drag one here</div>
+          <div class="u-sub">Each row = one shipment &middot; up to 2,000 rows per upload</div>
+          <div class="upload-filename" id="upload-filename"></div>
+        </label>
+        <input type="file" id="batch-file-input" accept=".csv" style="display:none;" onchange="onBatchFileSelected(this)" />
+
+        <div style="margin-top:18px; display:flex; gap:12px; align-items:center;">
+          <button class="btn btn-primary" id="batch-run-btn" onclick="runBatchPrediction()" disabled>
+            <div class="spinner" id="batch-spinner"></div>
+            <span id="batch-run-label">Run Batch Prediction</span>
+          </button>
+          <button class="btn btn-ghost" onclick="resetBatch()">Clear</button>
+        </div>
+      </div>
+
+      <!-- Batch Results -->
+      <div id="batch-result-panel" style="display:none; margin-top:24px;">
+        <div class="grid-4" style="margin-bottom:20px;">
+          <div class="kpi-card">
+            <div class="kpi-label">Rows Processed</div>
+            <div class="kpi-value" id="batch-kpi-rows">—</div>
+            <div class="kpi-sub" id="batch-kpi-rows-sub">&nbsp;</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">High-Risk Shipments</div>
+            <div class="kpi-value" id="batch-kpi-highrisk">—</div>
+            <div class="kpi-sub">Flagged loss_risk = 1</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Avg. Predicted Loss</div>
+            <div class="kpi-value" id="batch-kpi-avgloss">—</div>
+            <div class="kpi-sub">Across all processed rows</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Failed Rows</div>
+            <div class="kpi-value" id="batch-kpi-failed">—</div>
+            <div class="kpi-sub">Invalid or unparseable rows</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 3h18v18H3z"></path>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+            <h3>Prediction Results</h3>
+            <button class="btn btn-ghost" style="margin-left:auto; padding:6px 14px; font-size:12px;" onclick="downloadBatchCSV()">Download Full Results (CSV)</button>
+          </div>
+          <div class="batch-table-wrap">
+            <table class="batch-table">
+              <thead>
+                <tr>
+                  <th>Commodity</th>
+                  <th>Temp (°C)</th>
+                  <th>Humidity</th>
+                  <th>Expiry (d)</th>
+                  <th>Loss %</th>
+                  <th>Risk Prob.</th>
+                  <th>Urgency</th>
+                </tr>
+              </thead>
+              <tbody id="batch-table-body"></tbody>
+            </table>
+          </div>
+          <div class="batch-note" id="batch-preview-note"></div>
+        </div>
+      </div>
+    </div><!-- /view-batch -->
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT LOGIC
+═══════════════════════════════════════════════════════════ -->
+<script>
+const API = 'http://localhost:5050/api';
+
+/* ─── Navigation ──────────────────────────────────────────── */
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ─── Range Input Sync ────────────────────────────────────── */
+function syncRange(el, valId) {
+  const val = parseFloat(el.value);
+  let display = val;
+  if (valId === 'f-temperature-val') display = val.toFixed(1) + ' °C';
+  else if (valId === 'f-humidity-val') display = val.toFixed(0) + ' %';
+  else if (valId === 'f-expiry-val') display = val + ' days';
+  else if (valId === 'f-waiting-val') display = val + ' min';
+  else if (valId === 'f-inventory-val') display = val + ' kg';
+  document.getElementById(valId).textContent = display;
+}
+document.querySelectorAll('input[type=range]').forEach(el => {
+  const valId = el.id + '-val';
+  if (document.getElementById(valId)) syncRange(el, valId);
+});
+
+/* ─── Auto-fill temperature based on commodity ───────────── */
+const COLD_KW = ['dairy','milk','yogurt','yoghurt','cheese','meat','egg','fish','poultry','seafood','butter'];
+function autofillTemp() {
+  const c = document.getElementById('f-commodity').value.toLowerCase();
+  let temp = 18, hint = 'Ambient chain • Safe band: 10 to 25 °C';
+  if (c.includes('frozen') || c.includes('ice cream')) {
+    temp = -15; hint = 'Frozen chain • Safe band: -18 to -12 °C';
+  } else if (COLD_KW.some(k => c.includes(k))) {
+    temp = 4; hint = 'Cold chain • Safe band: 0 to 8 °C';
+  }
+  document.getElementById('f-temperature').value = temp;
+  syncRange(document.getElementById('f-temperature'), 'f-temperature-val');
+  document.getElementById('temp-class-hint').textContent = hint;
+}
+autofillTemp();
+
+/* ─── Run Prediction ─────────────────────────────────────── */
+async function runPrediction() {
+  const btn = document.getElementById('analyze-btn');
+  const spinner = document.getElementById('analyze-spinner');
+  const label = document.getElementById('analyze-label');
+  btn.disabled = true; spinner.style.display = 'block'; label.textContent = 'Analyzing...';
+
+  const waiting = parseFloat(document.getElementById('f-waiting').value);
+  const status  = document.getElementById('f-status').value;
+  const payload = {
+    commodity:             document.getElementById('f-commodity').value,
+    food_supply_stage:     document.getElementById('f-stage').value,
+    packaging_material:    document.getElementById('f-packaging').value,
+    Inventory_Level:       parseFloat(document.getElementById('f-inventory').value),
+    temperature_celsius:   parseFloat(document.getElementById('f-temperature').value),
+    Humidity:              parseFloat(document.getElementById('f-humidity').value),
+    days_to_expiry:        parseInt(document.getElementById('f-expiry').value),
+    Shipment_Status:       status,
+    Traffic_Status:        document.getElementById('f-traffic').value,
+    Logistics_Delay_Reason: document.getElementById('f-delay-reason').value,
+    Waiting_Time:          waiting,
+    Logistics_Delay:       (status === 'Delayed' || waiting > 30) ? 1.0 : 0.0,
+    hour_of_day: new Date().getHours(),
+    day_of_week: new Date().getDay(),
+    month: new Date().getMonth() + 1
+  };
+
+  try {
+    const res = await fetch(API + '/predict', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Inference failed');
+    renderResult(data);
+    showToast('Prediction complete', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false; spinner.style.display = 'none';
+    label.textContent = 'Analyze Shipment & Predict Risk';
+  }
+}
+
+function renderResult(data) {
+  const panel = document.getElementById('result-panel');
+  panel.classList.add('show');
+
+  document.getElementById('kpi-loss').textContent = data.predicted_loss_percentage.toFixed(2) + '%';
+  document.getElementById('kpi-risk-flag').textContent = data.predicted_loss_risk === 1 ? 'HIGH RISK' : 'LOW RISK';
+  document.getElementById('kpi-risk-prob').textContent = data.risk_probability_percentage.toFixed(1) + '%';
+  document.getElementById('result-timestamp').textContent = new Date().toLocaleTimeString();
+
+  // Urgency badge
+  const urg = data.urgency_level;
+  const urgClass = urgency2class(urg);
+  const urgEl = document.getElementById('kpi-urgency');
+  urgEl.innerHTML = `<span class="urgency-badge ${urgClass}">${urg}</span>`;
+
+  // Risk bar
+  const prob = data.risk_probability_percentage;
+  document.getElementById('risk-bar-fill').style.width = prob + '%';
+  document.getElementById('risk-bar-pct').textContent = prob.toFixed(1) + '%';
+
+  // Stress factors
+  const sl = document.getElementById('stress-list');
+  sl.innerHTML = '';
+  data.primary_stress_factors.forEach(f => {
+    const li = document.createElement('li');
+    li.className = 'stress-item';
+    li.innerHTML = `<span class="bullet"></span><span>${f}</span>`;
+    sl.appendChild(li);
+  });
+
+  // Action box
+  document.getElementById('action-code-badge').textContent = data.action_code;
+  document.getElementById('action-text').textContent = data.recommended_action;
+
+  // SHAP Model Explanation
+  const expSection = document.getElementById('explanation-section');
+  if (data.explanation && !data.explanation.error) {
+    renderFactorList('loss-factor-list', data.explanation.loss_pct_drivers, true);
+    renderFactorList('risk-factor-list', data.explanation.risk_drivers, false);
+    expSection.style.display = 'grid';
+  } else {
+    expSection.style.display = 'none';
+  }
+
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderFactorList(elId, factors, isPercentUnits) {
+  const el = document.getElementById(elId);
+  el.innerHTML = '';
+  if (!factors || factors.length === 0) {
+    el.innerHTML = '<li class="factor-item" style="color:var(--text-muted);font-size:12.5px;">No standout drivers detected.</li>';
+    return;
+  }
+  const maxAbs = Math.max(...factors.map(f => Math.abs(f.impact)), 0.0001);
+  factors.forEach(f => {
+    const li = document.createElement('li');
+    li.className = 'factor-item';
+    const pct = Math.max(6, Math.round((Math.abs(f.impact) / maxAbs) * 100));
+    const dirClass = f.direction === 'increases' ? 'increases' : 'decreases';
+    const valueStr = (f.value === null || f.value === undefined) ? '' : String(f.value);
+    const impactStr = isPercentUnits
+      ? `${f.impact > 0 ? '+' : ''}${f.impact.toFixed(2)} pts`
+      : `${f.impact > 0 ? '+' : ''}${f.impact.toFixed(3)} log-odds`;
+    li.innerHTML = `
+      <div class="factor-item-top">
+        <span class="factor-name">${f.feature}</span>
+        <span class="factor-value">${valueStr}</span>
+      </div>
+      <div class="factor-bar-track"><div class="factor-bar-fill ${dirClass}" style="width:${pct}%"></div></div>
+      <div class="factor-direction">${f.direction === 'increases' ? '▲' : '▼'} ${f.direction} ${isPercentUnits ? 'predicted loss' : 'risk'} (${impactStr})</div>
+    `;
+    el.appendChild(li);
+  });
+}
+
+function urgency2class(urg) {
+  if (urg.includes('CRITICAL')) return 'critical';
+  if (urg.includes('HIGH'))     return 'warning';
+  if (urg.includes('MODERATE')) return 'advisory';
+  return 'optimal';
+}
+
+/* ─── Reset Form ─────────────────────────────────────────── */
+function resetForm() {
+  document.getElementById('f-commodity').selectedIndex = 0;
+  document.getElementById('f-stage').selectedIndex = 0;
+  document.getElementById('f-packaging').selectedIndex = 0;
+  document.getElementById('f-status').selectedIndex = 0;
+  document.getElementById('f-traffic').selectedIndex = 0;
+  document.getElementById('f-delay-reason').selectedIndex = 0;
+  document.getElementById('f-inventory').value = 320;
+  document.getElementById('f-humidity').value = 55;
+  document.getElementById('f-expiry').value = 20;
+  document.getElementById('f-waiting').value = 15;
+  document.querySelectorAll('input[type=range]').forEach(el => {
+    const vid = el.id + '-val';
+    if (document.getElementById(vid)) syncRange(el, vid);
+  });
+  autofillTemp();
+  document.getElementById('result-panel').classList.remove('show');
+}
+
+/* ─── Scenario Simulator ──────────────────────────────────── */
+async function runScenario(id, btn, num) {
+  const spinner = btn.querySelector('.spinner');
+  const label   = btn.querySelector('span');
+  btn.disabled = true; spinner.style.display = 'inline-block'; label.textContent = 'Simulating...';
+
+  try {
+    const res = await fetch(`${API}/simulate/${id}`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Simulation failed');
+
+    const urgClass = urgency2class(data.urgency_level);
+    const resultEl = document.getElementById(`sc-result-${num}`);
+    resultEl.classList.add('show');
+    resultEl.innerHTML = `
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <div class="kpi-card" style="flex:1;padding:12px;">
+          <div class="kpi-label">Loss %</div>
+          <div class="kpi-value" style="font-size:20px">${data.predicted_loss_percentage.toFixed(2)}%</div>
+        </div>
+        <div class="kpi-card" style="flex:1;padding:12px;">
+          <div class="kpi-label">Risk Prob.</div>
+          <div class="kpi-value" style="font-size:20px">${data.risk_probability_percentage.toFixed(1)}%</div>
+        </div>
+      </div>
+      <span class="urgency-badge ${urgClass}" style="margin-bottom:10px;display:inline-flex">${data.urgency_level}</span>
+      <div class="action-box" style="margin-top:10px;font-size:12px;">
+        <p>${data.recommended_action}</p>
+      </div>`;
+    showToast('Simulation complete', 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false; spinner.style.display = 'none'; label.textContent = `Run Scenario ${num}`;
+  }
+}
+
+/* ─── Batch Analysis ──────────────────────────────────────── */
+let batchSelectedFile = null;
+let batchResultsData = [];   // full results array, kept for CSV export
+
+function onBatchFileSelected(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  if (!file.name.toLowerCase().endsWith('.csv')) {
+    showToast('Please choose a .csv file', 'error');
+    input.value = '';
+    return;
+  }
+  batchSelectedFile = file;
+  const fnEl = document.getElementById('upload-filename');
+  fnEl.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+  fnEl.classList.add('show');
+  document.getElementById('batch-run-btn').disabled = false;
+}
+
+// Drag & drop convenience on the drop zone
+(function initDragDrop() {
+  const zone = document.getElementById('upload-drop');
+  if (!zone) return;
+  ['dragover', 'dragenter'].forEach(evt =>
+    zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.add('dragover'); })
+  );
+  ['dragleave', 'drop'].forEach(evt =>
+    zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.remove('dragover'); })
+  );
+  zone.addEventListener('drop', e => {
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) {
+      const input = document.getElementById('batch-file-input');
+      input.files = e.dataTransfer.files;
+      onBatchFileSelected(input);
+    }
+  });
+})();
+
+async function runBatchPrediction() {
+  if (!batchSelectedFile) return;
+  const btn = document.getElementById('batch-run-btn');
+  const spinner = document.getElementById('batch-spinner');
+  const label = document.getElementById('batch-run-label');
+  btn.disabled = true; spinner.style.display = 'block'; label.textContent = 'Processing batch...';
+
+  const formData = new FormData();
+  formData.append('file', batchSelectedFile);
+
+  try {
+    const res = await fetch(API + '/predict/batch', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Batch inference failed');
+    renderBatchResults(data);
+    showToast(`Batch complete: ${data.summary.rows_succeeded} shipments scored`, 'success');
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    btn.disabled = false; spinner.style.display = 'none';
+    label.textContent = 'Run Batch Prediction';
+  }
+}
+
+function renderBatchResults(data) {
+  batchResultsData = data.results;
+  const s = data.summary;
+
+  document.getElementById('batch-kpi-rows').textContent = s.rows_succeeded.toLocaleString();
+  document.getElementById('batch-kpi-rows-sub').textContent = `of ${s.rows_submitted.toLocaleString()} submitted${s.truncated_to_max_rows ? ' (truncated to cap)' : ''}`;
+  document.getElementById('batch-kpi-highrisk').textContent = s.high_risk_count.toLocaleString();
+  document.getElementById('batch-kpi-avgloss').textContent = s.average_predicted_loss_percentage.toFixed(2) + '%';
+  document.getElementById('batch-kpi-failed').textContent = s.rows_failed.toLocaleString();
+
+  const tbody = document.getElementById('batch-table-body');
+  tbody.innerHTML = '';
+  const previewRows = data.results.slice(0, 100);
+  previewRows.forEach(r => {
+    const tr = document.createElement('tr');
+    const urgClass = urgency2class(r.urgency_level);
+    tr.innerHTML = `
+      <td class="cell-strong">${r.commodity}</td>
+      <td>${r.temperature_celsius.toFixed(1)}</td>
+      <td>${r.humidity.toFixed(0)}%</td>
+      <td>${r.days_to_expiry}</td>
+      <td class="cell-strong">${r.predicted_loss_percentage.toFixed(2)}%</td>
+      <td>${r.risk_probability_percentage.toFixed(1)}%</td>
+      <td><span class="urgency-badge ${urgClass}">${r.urgency_level}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  let note = `Showing ${previewRows.length} of ${data.results.length} scored shipments in this preview.`;
+  if (data.errors && data.errors.length > 0) {
+    note += ` ${data.errors.length} row(s) failed validation and were skipped — download the CSV to see raw predictions, or check the input file for missing/invalid values.`;
+  }
+  document.getElementById('batch-preview-note').textContent = note;
+
+  document.getElementById('batch-result-panel').style.display = 'block';
+}
+
+function downloadBatchCSV() {
+  if (!batchResultsData || batchResultsData.length === 0) return;
+  const cols = ['commodity', 'temp_class', 'temperature_celsius', 'humidity', 'days_to_expiry',
+                'waiting_time_min', 'shipment_status', 'predicted_loss_percentage',
+                'predicted_loss_risk', 'risk_probability_percentage', 'urgency_level',
+                'action_code', 'recommended_action'];
+  const escapeCsv = v => {
+    const s = String(v ?? '');
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const lines = [cols.join(',')];
+  batchResultsData.forEach(r => {
+    lines.push(cols.map(c => escapeCsv(r[c])).join(','));
+  });
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `batch_predictions_${Date.now()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function resetBatch() {
+  batchSelectedFile = null;
+  batchResultsData = [];
+  document.getElementById('batch-file-input').value = '';
+  document.getElementById('upload-filename').classList.remove('show');
+  document.getElementById('upload-filename').textContent = '';
+  document.getElementById('batch-run-btn').disabled = true;
+  document.getElementById('batch-result-panel').style.display = 'none';
+}
+
+/* ─── Toast Notifications ─────────────────────────────────── */
+function showToast(msg, type='info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+/* ─── Health Check on Load ────────────────────────────────── */
+(async function() {
+  try {
+    const res = await fetch(API + '/health');
+    const data = await res.json();
+    if (data.status !== 'ok' || !data.models_loaded)
+      showToast('Models not loaded', 'error');
+  } catch {
+    showToast('API offline - run: python3 server.py', 'error');
+  }
+})();
+</script>
+</body>
+</html>
