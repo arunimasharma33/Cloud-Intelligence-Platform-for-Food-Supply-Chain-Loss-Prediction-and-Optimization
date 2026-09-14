@@ -1,0 +1,77 @@
+[
+  {
+    "scenario_id": "SCENARIO_01_OPTIMAL_AMBIENT",
+    "description": "Standard safe ambient transport of hard cereals (Maize) with optimal temperature and no delay.",
+    "payload": {
+      "Timestamp": "2024-08-14 14:30:00",
+      "commodity": "Maize (corn)",
+      "food_supply_stage": "Transport",
+      "packaging_material": "cardboard",
+      "days_to_expiry": 28,
+      "temperature_celsius": 18.5,
+      "Humidity": 54.0,
+      "Waiting_Time": 12.0,
+      "Logistics_Delay": 0.0,
+      "Logistics_Delay_Reason": "Unknown",
+      "Shipment_Status": "In Transit",
+      "Traffic_Status": "Clear",
+      "Inventory_Level": 380.0,
+      "Asset_Utilization": 85.0,
+      "Demand_Forecast": 220.0,
+      "User_Transaction_Amount": 190.0,
+      "User_Purchase_Frequency": 4.5,
+      "Latitude": 34.05,
+      "Longitude": -118.25
+    }
+  },
+  {
+    "scenario_id": "SCENARIO_02_COLD_CHAIN_BREACH",
+    "description": "Severe cold-chain compressor failure during fresh dairy transit (17.2°C vs safe 0–8°C limit) with mechanical delay.",
+    "payload": {
+      "Timestamp": "2024-07-20 15:45:00",
+      "commodity": "Milk (fresh whole dairy)",
+      "food_supply_stage": "Transport",
+      "packaging_material": "plastic",
+      "days_to_expiry": 6,
+      "temperature_celsius": 17.2,
+      "Humidity": 78.5,
+      "Waiting_Time": 58.0,
+      "Logistics_Delay": 1.0,
+      "Logistics_Delay_Reason": "Mechanical Failure",
+      "Shipment_Status": "Delayed",
+      "Traffic_Status": "Heavy",
+      "Inventory_Level": 420.0,
+      "Asset_Utilization": 92.0,
+      "Demand_Forecast": 310.0,
+      "User_Transaction_Amount": 260.0,
+      "User_Purchase_Frequency": 7.0,
+      "Latitude": 41.88,
+      "Longitude": -87.63
+    }
+  },
+  {
+    "scenario_id": "SCENARIO_03_PERISHABLE_PRODUCE_EXPIRY",
+    "description": "High-vulnerability soft stone-fruit produce near expiration date (2 days left) with heavy urban traffic delay.",
+    "payload": {
+      "Timestamp": "2024-06-15 17:10:00",
+      "commodity": "Apricots",
+      "food_supply_stage": "Retail",
+      "packaging_material": "cardboard",
+      "days_to_expiry": 2,
+      "temperature_celsius": 26.5,
+      "Humidity": 68.0,
+      "Waiting_Time": 42.0,
+      "Logistics_Delay": 0.8,
+      "Logistics_Delay_Reason": "Traffic",
+      "Shipment_Status": "In Transit",
+      "Traffic_Status": "Heavy",
+      "Inventory_Level": 160.0,
+      "Asset_Utilization": 65.0,
+      "Demand_Forecast": 140.0,
+      "User_Transaction_Amount": 115.0,
+      "User_Purchase_Frequency": 3.0,
+      "Latitude": 37.77,
+      "Longitude": -122.42
+    }
+  }
+]

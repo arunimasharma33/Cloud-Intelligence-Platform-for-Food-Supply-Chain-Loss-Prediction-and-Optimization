@@ -1,0 +1,128 @@
+{
+  "dataset_shape": {
+    "rows": 30000,
+    "columns": 30
+  },
+  "missing_values": {
+    "total_missing_cells": 0,
+    "columns_with_missing": {}
+  },
+  "duplicates": {
+    "exact_duplicates": 0,
+    "operational_duplicates": 0
+  },
+  "dtypes": {
+    "Timestamp": "str",
+    "Asset_ID": "str",
+    "Latitude": "float64",
+    "Longitude": "float64",
+    "Inventory_Level": "float64",
+    "Shipment_Status": "str",
+    "Temperature": "float64",
+    "Humidity": "float64",
+    "Traffic_Status": "str",
+    "Waiting_Time": "float64",
+    "User_Transaction_Amount": "float64",
+    "User_Purchase_Frequency": "float64",
+    "Logistics_Delay_Reason": "str",
+    "Asset_Utilization": "float64",
+    "Demand_Forecast": "float64",
+    "Logistics_Delay": "float64",
+    "commodity": "str",
+    "fao_stage": "str",
+    "food_supply_stage": "str",
+    "packaging_material": "str",
+    "days_to_expiry": "int64",
+    "temp_class": "str",
+    "raw_temperature": "float64",
+    "simulated_temperature": "float64",
+    "fao_base_loss_mean": "float64",
+    "temp_deviation_score": "float64",
+    "humidity_deviation_score": "float64",
+    "expiry_pressure_score": "float64",
+    "synthetic_loss_percentage": "float64",
+    "loss_risk": "int64"
+  },
+  "boundary_checks": {
+    "gps_coordinates": {
+      "latitude_valid": false,
+      "longitude_valid": false,
+      "lat_min": -93.56336726335334,
+      "lat_max": 93.27253627245526,
+      "lon_min": -188.84145455498185,
+      "lon_max": 192.26545878885707
+    },
+    "humidity": {
+      "valid": true,
+      "min": 49.32291506723153,
+      "max": 80.62085984128785,
+      "mean": 65.02801356317437,
+      "std": 8.69355653294069
+    },
+    "days_to_expiry": {
+      "valid": true,
+      "min": 1,
+      "max": 30
+    },
+    "temperature_by_class": {
+      "ambient": {
+        "count": 29731,
+        "min": 0.8197775627010895,
+        "mean": 17.451744957850117,
+        "max": 34.395224389701745,
+        "std": 4.6088475275468115,
+        "breaches": 1491,
+        "breach_rate": 0.0501496754229592
+      },
+      "cold": {
+        "count": 264,
+        "min": -7.160257651441206,
+        "mean": 4.115210504518101,
+        "max": 16.465693989497215,
+        "std": 3.069724714590576,
+        "breaches": 18,
+        "breach_rate": 0.06818181818181818
+      },
+      "frozen": {
+        "count": 5,
+        "min": -22.909528352335705,
+        "mean": -16.256258749416798,
+        "max": -12.23624254165178,
+        "std": 4.128131045341246,
+        "breaches": 1,
+        "breach_rate": 0.2
+      }
+    },
+    "logistics": {
+      "waiting_time_min": 8.341965808063652,
+      "waiting_time_max": 61.09991861155898,
+      "delay_rate": 0.7800666666666667
+    },
+    "loss_percentage": {
+      "strictly_in_bounds": true,
+      "min": 0.0,
+      "max": 84.3595056212213,
+      "mean": 10.815137550946728,
+      "std": 6.413116080443554
+    }
+  },
+  "target_distributions": {
+    "synthetic_loss_percentage": {
+      "mean": 10.815137550946728,
+      "std": 6.413116080443554,
+      "min": 0.0,
+      "q25": 6.769239379124895,
+      "median": 10.181070454195076,
+      "q75": 13.836849753795441,
+      "max": 84.3595056212213,
+      "70th_percentile": 13.000319795995583
+    },
+    "loss_risk": {
+      "class_0_count": 21000,
+      "class_1_count": 9000,
+      "positive_class_ratio": 0.3
+    }
+  },
+  "status": "PASS",
+  "timestamp_valid": true
+}

@@ -1,0 +1,228 @@
+{
+  "regression_champion": "Ridge Regression",
+  "regression_importances": [
+    {
+      "feature": "Logistics_Delay",
+      "importance_mean": 0.31768389090225935,
+      "importance_std": 0.016800753413011914
+    },
+    {
+      "feature": "days_to_expiry",
+      "importance_mean": 0.28884490809097557,
+      "importance_std": 0.013973748092048386
+    },
+    {
+      "feature": "commodity",
+      "importance_mean": 0.23122231826852668,
+      "importance_std": 0.011562926975522391
+    },
+    {
+      "feature": "food_supply_stage",
+      "importance_mean": 0.06453079950144343,
+      "importance_std": 0.01230379567859853
+    },
+    {
+      "feature": "Demand_Forecast",
+      "importance_mean": 0.0009434384595017109,
+      "importance_std": 0.0005928780938882915
+    },
+    {
+      "feature": "temp_class",
+      "importance_mean": 0.0008079268845995191,
+      "importance_std": 0.0005629923784958333
+    },
+    {
+      "feature": "Humidity",
+      "importance_mean": 0.0008047216561931858,
+      "importance_std": 0.0011563278458267563
+    },
+    {
+      "feature": "User_Transaction_Amount",
+      "importance_mean": 0.0006972396311736295,
+      "importance_std": 0.0002583801162256176
+    },
+    {
+      "feature": "Latitude",
+      "importance_mean": 0.00037365943680240933,
+      "importance_std": 0.0001769726701839255
+    },
+    {
+      "feature": "Traffic_Status",
+      "importance_mean": 0.00034582994314398264,
+      "importance_std": 0.0002120566170769426
+    },
+    {
+      "feature": "Inventory_Level",
+      "importance_mean": 0.0002817743653003024,
+      "importance_std": 0.00022335395871447578
+    },
+    {
+      "feature": "Waiting_Time",
+      "importance_mean": 0.0001910871999057262,
+      "importance_std": 0.00016507710619847335
+    },
+    {
+      "feature": "packaging_material",
+      "importance_mean": 0.00018071278292859373,
+      "importance_std": 0.0002047366823129798
+    },
+    {
+      "feature": "Shipment_Status",
+      "importance_mean": 8.945057477578455e-05,
+      "importance_std": 0.0003303134524135246
+    },
+    {
+      "feature": "temperature_celsius",
+      "importance_mean": 3.3437958193238694e-05,
+      "importance_std": 0.00028689567629992265
+    },
+    {
+      "feature": "hour_of_day",
+      "importance_mean": 2.7376584022342775e-05,
+      "importance_std": 1.3325960073147195e-05
+    },
+    {
+      "feature": "month",
+      "importance_mean": 2.7367284098800404e-05,
+      "importance_std": 1.3641303047624816e-05
+    },
+    {
+      "feature": "Longitude",
+      "importance_mean": -4.6763797064319765e-05,
+      "importance_std": 0.0001742007798882304
+    },
+    {
+      "feature": "Asset_Utilization",
+      "importance_mean": -7.915793983348518e-05,
+      "importance_std": 3.5739584601009296e-05
+    },
+    {
+      "feature": "day_of_week",
+      "importance_mean": -0.00018568414196620253,
+      "importance_std": 9.924963875068652e-05
+    },
+    {
+      "feature": "User_Purchase_Frequency",
+      "importance_mean": -0.00018956133490404258,
+      "importance_std": 0.0001526682903086259
+    },
+    {
+      "feature": "Logistics_Delay_Reason",
+      "importance_mean": -0.00025226554402180135,
+      "importance_std": 0.00017263158209658536
+    }
+  ],
+  "classification_champion": "HistGradientBoosting",
+  "classification_importances": [
+    {
+      "feature": "days_to_expiry",
+      "importance_mean": 0.10750000000000001,
+      "importance_std": 0.004048319267163695
+    },
+    {
+      "feature": "Logistics_Delay",
+      "importance_mean": 0.09516666666666666,
+      "importance_std": 0.008618455649231941
+    },
+    {
+      "feature": "commodity",
+      "importance_mean": 0.04283333333333332,
+      "importance_std": 0.007774602526460395
+    },
+    {
+      "feature": "food_supply_stage",
+      "importance_mean": 0.015166666666666684,
+      "importance_std": 0.0016158932858054802
+    },
+    {
+      "feature": "temperature_celsius",
+      "importance_mean": 0.005166666666666675,
+      "importance_std": 0.0008164965809277449
+    },
+    {
+      "feature": "Humidity",
+      "importance_mean": 0.004499999999999993,
+      "importance_std": 0.003929942040850524
+    },
+    {
+      "feature": "month",
+      "importance_mean": 0.001000000000000023,
+      "importance_std": 0.000623609564462338
+    },
+    {
+      "feature": "Logistics_Delay_Reason",
+      "importance_mean": 0.000666666666666682,
+      "importance_std": 0.000333333333333341
+    },
+    {
+      "feature": "Inventory_Level",
+      "importance_mean": 0.0001666666666666705,
+      "importance_std": 0.0012247448713916173
+    },
+    {
+      "feature": "Shipment_Status",
+      "importance_mean": 0.0001666666666666705,
+      "importance_std": 0.000623609564462338
+    },
+    {
+      "feature": "day_of_week",
+      "importance_mean": 0.0001666666666666705,
+      "importance_std": 0.0008164965809277449
+    },
+    {
+      "feature": "Longitude",
+      "importance_mean": 0.0001666666666666483,
+      "importance_std": 0.0017795130420052202
+    },
+    {
+      "feature": "User_Purchase_Frequency",
+      "importance_mean": 2.2204460492503132e-17,
+      "importance_std": 0.0019002923751652448
+    },
+    {
+      "feature": "packaging_material",
+      "importance_mean": -0.000333333333333341,
+      "importance_std": 0.0012472191289246758
+    },
+    {
+      "feature": "hour_of_day",
+      "importance_mean": -0.0005000000000000115,
+      "importance_std": 0.0011303883305209042
+    },
+    {
+      "feature": "Demand_Forecast",
+      "importance_mean": -0.0005000000000000115,
+      "importance_std": 0.000849836585598817
+    },
+    {
+      "feature": "Asset_Utilization",
+      "importance_mean": -0.0005000000000000115,
+      "importance_std": 0.000666666666666682
+    },
+    {
+      "feature": "Latitude",
+      "importance_mean": -0.0008333333333333304,
+      "importance_std": 0.001394433377556785
+    },
+    {
+      "feature": "temp_class",
+      "importance_mean": -0.0008333333333333526,
+      "importance_std": 0.0
+    },
+    {
+      "feature": "Waiting_Time",
+      "importance_mean": -0.0011666666666666713,
+      "importance_std": 0.0008498365855987823
+    },
+    {
+      "feature": "User_Transaction_Amount",
+      "importance_mean": -0.001333333333333342,
+      "importance_std": 0.0006666666666666432
+    },
+    {
+      "feature": "Traffic_Status",
+      "importance_mean": -0.0015000000000000124,
+      "importance_std": 0.001105541596785122
+    }
+  ]
+}
