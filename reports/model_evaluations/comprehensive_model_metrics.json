@@ -1,0 +1,178 @@
+{
+  "regression": {
+    "leaderboard": [
+      {
+        "Model": "Dummy (Mean)",
+        "MAE (%)": 4.713,
+        "MSE (%\u00b2)": 44.115,
+        "RMSE (%)": 6.642,
+        "R2 Score": -0.0003,
+        "MAPE": 24.2589
+      },
+      {
+        "Model": "Ridge Regression",
+        "MAE (%)": 3.219,
+        "MSE (%\u00b2)": 23.556,
+        "RMSE (%)": 4.853,
+        "R2 Score": 0.4659,
+        "MAPE": 15.4422
+      },
+      {
+        "Model": "Decision Tree",
+        "MAE (%)": 3.571,
+        "MSE (%\u00b2)": 30.335,
+        "RMSE (%)": 5.508,
+        "R2 Score": 0.3122,
+        "MAPE": 14.8788
+      },
+      {
+        "Model": "Random Forest",
+        "MAE (%)": 3.341,
+        "MSE (%\u00b2)": 25.669,
+        "RMSE (%)": 5.066,
+        "R2 Score": 0.418,
+        "MAPE": 15.753
+      },
+      {
+        "Model": "HistGradientBoosting",
+        "MAE (%)": 3.26,
+        "MSE (%\u00b2)": 24.717,
+        "RMSE (%)": 4.972,
+        "R2 Score": 0.4396,
+        "MAPE": 15.8645
+      },
+      {
+        "Model": "Extra Trees",
+        "MAE (%)": 3.355,
+        "MSE (%\u00b2)": 26.471,
+        "RMSE (%)": 5.145,
+        "R2 Score": 0.3998,
+        "MAPE": 15.767
+      }
+    ],
+    "champion_model": "Ridge Regression",
+    "best_r2": 0.46589539863915463
+  },
+  "classification": {
+    "leaderboard": [
+      {
+        "Model": "Dummy (Stratified)",
+        "Accuracy": 0.5797,
+        "Precision": 0.2951,
+        "Recall": 0.2889,
+        "F1 Score": 0.292,
+        "ROC-AUC": 0.4966,
+        "PR-AUC": 0.2986
+      },
+      {
+        "Model": "Logistic Regression",
+        "Accuracy": 0.8078,
+        "Precision": 0.7196,
+        "Recall": 0.5889,
+        "F1 Score": 0.6477,
+        "ROC-AUC": 0.8588,
+        "PR-AUC": 0.7198
+      },
+      {
+        "Model": "Decision Tree",
+        "Accuracy": 0.79,
+        "Precision": 0.6758,
+        "Recall": 0.5767,
+        "F1 Score": 0.6223,
+        "ROC-AUC": 0.8169,
+        "PR-AUC": 0.6283
+      },
+      {
+        "Model": "Random Forest",
+        "Accuracy": 0.7905,
+        "Precision": 0.7184,
+        "Recall": 0.4961,
+        "F1 Score": 0.5869,
+        "ROC-AUC": 0.8434,
+        "PR-AUC": 0.6876
+      },
+      {
+        "Model": "HistGradientBoosting",
+        "Accuracy": 0.8093,
+        "Precision": 0.713,
+        "Recall": 0.61,
+        "F1 Score": 0.6575,
+        "ROC-AUC": 0.8624,
+        "PR-AUC": 0.7152
+      },
+      {
+        "Model": "Extra Trees",
+        "Accuracy": 0.7862,
+        "Precision": 0.7502,
+        "Recall": 0.4306,
+        "F1 Score": 0.5471,
+        "ROC-AUC": 0.8485,
+        "PR-AUC": 0.7004
+      }
+    ],
+    "champion_model": "HistGradientBoosting",
+    "best_roc_auc": 0.8623525132275134,
+    "confusion_matrices": {
+      "Dummy (Stratified)": [
+        [
+          2958,
+          1242
+        ],
+        [
+          1280,
+          520
+        ]
+      ],
+      "Logistic Regression": [
+        [
+          3787,
+          413
+        ],
+        [
+          740,
+          1060
+        ]
+      ],
+      "Decision Tree": [
+        [
+          3702,
+          498
+        ],
+        [
+          762,
+          1038
+        ]
+      ],
+      "Random Forest": [
+        [
+          3850,
+          350
+        ],
+        [
+          907,
+          893
+        ]
+      ],
+      "HistGradientBoosting": [
+        [
+          3758,
+          442
+        ],
+        [
+          702,
+          1098
+        ]
+      ],
+      "Extra Trees": [
+        [
+          3942,
+          258
+        ],
+        [
+          1025,
+          775
+        ]
+      ]
+    }
+  }
+}
