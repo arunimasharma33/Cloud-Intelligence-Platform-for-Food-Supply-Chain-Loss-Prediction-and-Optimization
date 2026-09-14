@@ -1,0 +1,62 @@
+{
+  "dataset_shape": {
+    "rows": 30000,
+    "columns": 26
+  },
+  "target_variables": {
+    "continuous_regression": "synthetic_loss_percentage",
+    "binary_classification": "loss_risk"
+  },
+  "dropped_leakage_and_redundant_columns": [
+    "dt",
+    "Temperature",
+    "raw_temperature",
+    "simulated_temperature",
+    "fao_stage",
+    "fao_base_loss_mean",
+    "temp_deviation_score",
+    "humidity_deviation_score",
+    "expiry_pressure_score"
+  ],
+  "input_features": {
+    "numeric": [
+      "Latitude",
+      "Longitude",
+      "Inventory_Level",
+      "Humidity",
+      "Waiting_Time",
+      "User_Transaction_Amount",
+      "User_Purchase_Frequency",
+      "Asset_Utilization",
+      "Demand_Forecast",
+      "Logistics_Delay",
+      "days_to_expiry",
+      "hour_of_day",
+      "day_of_week",
+      "month",
+      "temperature_celsius"
+    ],
+    "categorical": [
+      "Shipment_Status",
+      "Traffic_Status",
+      "Logistics_Delay_Reason",
+      "commodity",
+      "food_supply_stage",
+      "packaging_material",
+      "temp_class"
+    ],
+    "total_count": 22
+  },
+  "splits": {
+    "train_rows": 24000,
+    "test_rows": 6000,
+    "stratification_column": "loss_risk"
+  },
+  "baseline_sanity_metrics": {
+    "regression_r2": 0.4086823204591815,
+    "regression_rmse": 5.1067956116596225,
+    "classification_roc_auc": 0.843301917989418,
+    "classification_accuracy": 0.776,
+    "classification_f1": 0.49700598802395207
+  }
+}
