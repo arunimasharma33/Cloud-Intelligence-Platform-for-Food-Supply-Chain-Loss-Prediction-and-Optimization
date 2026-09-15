@@ -1,0 +1,17 @@
+# Core ML & Data Science
+numpy==2.4.4
+pandas==3.0.2
+scikit-learn==1.8.0
+scipy==1.16.3
+joblib==1.5.2
+
+# Visualizations
+matplotlib==3.10.7
+seaborn==0.13.2
+
+# Explainability
+shap==0.52.0
+
+# Web Application & API
+Flask>=3.0.0
+flask-cors>=4.0.0
