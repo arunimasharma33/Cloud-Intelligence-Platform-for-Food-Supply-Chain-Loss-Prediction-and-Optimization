@@ -26,6 +26,11 @@ import pandas as pd
 from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_cors import CORS
 
+# Windows consoles default to a non-UTF-8 codepage, which crashes the
+# decorative print() calls below (checkmarks, box-drawing borders).
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 # Determine absolute project root (scripts/server/ → scripts/ → project root)
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
@@ -103,6 +108,18 @@ def predict():
     except Exception as e:
         return jsonify({"error": f"Inference failed: {str(e)}"}), 500
 
+@app.route("/api/predict/schema", methods=["GET"])
+def predict_schema():
+    """Describes the shipment payload shape accepted by /api/predict, so a
+    client can build/validate a form without hardcoding the feature list."""
+    if engine is None:
+        return jsonify({"error": "Inference engine not loaded."}), 503
+    return jsonify({
+        "required_features": engine.feature_names,
+        "mandatory_fields": ["commodity"],
+        "notes": "All fields besides 'commodity' have sensible server-side defaults if omitted."
+    })
+
 @app.route("/api/predict/batch", methods=["POST"])
 def predict_batch():
     """
@@ -168,6 +185,15 @@ def predict_batch():
         "results": results,
         "errors": errors,
     })
+
+@app.route("/api/scenarios", methods=["GET"])
+def list_scenarios():
+    """Lists preset simulation scenarios (id + description only) so a client
+    can populate a scenario picker without hardcoding IDs from sample_shipments.json."""
+    return jsonify([
+        {"scenario_id": sid, "description": sc["description"]}
+        for sid, sc in SAMPLE_SCENARIOS.items()
+    ])
 
 @app.route("/api/simulate/<scenario_id>", methods=["POST"])
 def simulate(scenario_id):
